@@ -6,27 +6,35 @@ export default class CategoryList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        categories: [
-            {categoryId:1,categoryName:"Car"},
-            {categoryId:2,categoryName:"Plane"}
-        ],
-        counter:1
-    }
+      categories: []
+    };
   }
+
+  componentDidMount() {
+    this.getCategories();
+  }
+
+  getCategories = () => {
+    fetch("http://localhost:3000/categories")
+      .then(res => res.json())
+      .then(res => this.setState({ categories: res }));
+  };
+
   render() {
     return (
       <div>
         <h2>{this.props.info.title}</h2>
         <ListGroup>
-          <ListGroupItem className="justify-content-between">
-            Cras justo odio <Badge pill>14</Badge>
-          </ListGroupItem>
-          <ListGroupItem className="justify-content-between">
-            Dapibus ac facilisis in <Badge pill>2</Badge>
-          </ListGroupItem>
-          <ListGroupItem className="justify-content-between">
-            Morbi leo risus <Badge pill>1</Badge>
-          </ListGroupItem>
+          {this.state.categories.map(category => (
+            <ListGroupItem
+            active={category.categoryName === this.props.currentCategory ? true : false}
+              onClick={() => this.props.changeCategory(category)}
+              key={category.id}
+              className="justify-content-between"
+            >
+              {category.categoryName} <Badge pill>{}</Badge>
+            </ListGroupItem>
+          ))}
         </ListGroup>
       </div>
     );
